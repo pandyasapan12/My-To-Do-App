@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+         
+    <style type="text/css">
+    
+        #hidden-wrapper .ui-input-text {
+            width: 70% !important;
+            display: inline-block !important;
+        }
+        
+        #removeButton{
+            width: 40% !important;
+        }
+        
+        #markAll{
+            width: 80% !important;
+        }
+        
+        hr.doubleLine{
+	       border-top: 3px double black;
+        }
+                
+    </style>    
+</head>
+
+<body ng-app="myApp">
+    
+    <div data-role="page">
+        
+      <div data-role="header">
+        <h1>My ToDo App</h1>
+      </div>
+
+      <div data-role="main" class="ui-content" ng-controller="todoCtrl">
+          
+            <form id="hidden-wrapper" ng-submit="todoAdd()" data-theme="b">
+                <input class="ui-input-text" type="text" ng-model="todoInput" placeholder="New Task">
+                <button type="submit" data-inline="true" data-theme="a" class="ui-mini">ADD</button>
+            </form>
+          
+            <div ng-show="isTodo()" id="markAll">
+                <input id="toggle-all" type="checkbox" ng-model="markAll" ng-click="toggleMarkAll()"/>
+                <label for="toggle-all" >Mark all as complete</label>
+            </div>
+                    
+           <hr class="doubleLine">
+
+            <div ng-repeat="x in todoList" class="ui-checkbox">
+                <label  class="ui-btn ui-corner-all ui-btn-inherit ui-btn-icon-left ui-checkbox-off">
+                    <input type="checkbox" ng-model="x.done"> <span ng-bind="x.todoText"></span>
+                </label>
+            </div>
+          
+            <p><button id="removeButton" ng-click="remove()" class="ui-btn ui-btn-b">Done</button></p>
+      </div>
+
+      <div data-role="footer">
+        <h1>&copy; 2015 MyToDoApp</h1>
+      </div>
+    </div> 
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+    <script>
+    var app = angular.module('myApp', []); 
+    app.controller('todoCtrl', function($scope) {
+        $scope.todoList = [];
+
+        $scope.todoAdd = function() {
+            $scope.todoList.push({todoText:$scope.todoInput, done:false});
+            $scope.todoInput = "";
+        };
+
+        $scope.remove = function() {
+            var oldList = $scope.todoList;
+            $scope.todoList = [];
+            angular.forEach(oldList, function(x) {
+                if (!x.done) $scope.todoList.push(x);
+            });
+        };
+        
+        $scope.isTodo = function(){
+            return $scope.todoList.length > 0;  
+        };
+        
+        $scope.toggleMarkAll = function() {
+            angular.forEach($scope.todoList, function(todo) {
+                todo.done =$scope.markAll;
+            });
+        };
+    });
+    </script>
+
+</body>
+</html>
